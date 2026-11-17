@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  converter:
+    name: Converter tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # setuptools-scm reads the package version from the tags
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: tools/imi-dashboard/pyproject.toml
+      - name: Install imi-dashboard
+        run: pip install -e "tools/imi-dashboard[dev]"
+      - name: Run tests
+        run: pytest tools/imi-dashboard/tests/
+      - name: Type-check the converter
+        run: mypy --config-file tools/imi-dashboard/pyproject.toml tools/imi-dashboard/imi_dashboard
+
+  # The job above installs the newest release of every dependency. This one
+  # installs the lowest version that pyproject.toml allows for each direct
+  # dependency, on the oldest supported Python, so that the declared minimums
+  # stay true. (Type checking is left to the job above: mypy's own minimum
+  # would type-check against old stubs.)
+  converter-lowest:
+    name: Converter tests (lowest versions, Python 3.11)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # setuptools-scm reads the package version from the tags
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - name: Install imi-dashboard with its lowest allowed dependencies
+        run: |
+          pip install uv
+          uv pip install --system --resolution lowest-direct -e "tools/imi-dashboard[dev]"
+          uv pip list --system
+      - name: Run tests
+        run: pytest tools/imi-dashboard/tests/
+
+  web:
+    name: Web app type check and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+        working-directory: web
+      # `npm run build` runs the type check (tsc --noEmit) before vite build.
+      - run: npm run build
+        working-directory: web
+
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # setuptools-scm reads the package version from the tags
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build the web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: tools/imi-dashboard/pyproject.toml
+      - name: Install imi-dashboard, pytest-playwright and Chromium
+        run: |
+          pip install -e "tools/imi-dashboard[dev,browser]"
+          playwright install --with-deps chromium
+      - name: Run the browser tests
+        env:
+          # A missing prerequisite fails the tests here instead of skipping them.
+          IMI_DASHBOARD_REQUIRE_BROWSER: "1"
+        run: >-
+          pytest tools/imi-dashboard/tests/test_browser.py
+          --tracing retain-on-failure --screenshot only-on-failure
+      - name: Keep the traces and screenshots of failed tests
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-test-results
+          path: test-results/
+          if-no-files-found: ignore

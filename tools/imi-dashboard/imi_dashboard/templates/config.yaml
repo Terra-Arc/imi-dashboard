@@ -1,0 +1,94 @@
+#%header
+## imi-dashboard config.
+##
+## Lines starting with `##` explain. Lines starting with `# ` are settings,
+## shown with example values. Every setting is optional, and so is this
+## file: a setting left commented keeps its default. To change one, delete
+## its `# ` (and that of its section line, such as `# map:`) and edit the
+## value, then run
+#%end
+##
+##     imi-dashboard convert <imi-output-folder> <dashboard-folder> --config <this-file>
+##
+## Reference: https://github.com/Terra-Arc/imi-dashboard/blob/main/docs/guide.md#configuration
+
+
+## ── Titles ──────────────────────────────────────────────────────────────
+
+## The name of the area the run covers, used in titles such as "Monthly
+## emissions over Romania". Not set: the titles name no area.
+# area_name: Romania
+
+## The dashboard's name: the browser tab's title and the overview page's
+## heading. Default: "Methane emissions over <area_name>", or "Methane
+## emissions" without an area_name.
+# display_name: Methane emissions over Romania
+
+
+## ── Region ──────────────────────────────────────────────────────────────
+
+## roi: the region of interest only. The buffer elements are dropped and
+## the map is cropped around what remains. Needs state_vector.nc; without
+## it, roi shows the whole domain.
+## domain: the whole inversion domain, buffer elements included.
+## The --region option of convert overrides this setting.
+#%region
+# region: roi                   # roi | domain
+
+
+## ── Branding ────────────────────────────────────────────────────────────
+
+## terra: Terra Arc in the header. custom: your own logo, name and tagline
+## in the header, each optional; the footer then credits the software.
+# header_brand: terra           # terra | custom
+# logo: ./logo.png              # an image; a relative path is read from this file's folder
+# brand_name: Your organisation
+# brand_tagline: Your tagline
+
+
+## ── Sectors ─────────────────────────────────────────────────────────────
+
+## The emission sectors, in display order. Not set: every sector found in
+## the run. A list given here replaces that one, so a sector left out of it
+## is not shown.
+## A standard id needs nothing else: total, oil, gas, coal, livestock,
+## landfills, wastewater, rice, other_anth, wetlands, biomass, reservoirs,
+## lakes, seeps, termites, soil_absorb. Any other id needs imi_var (its
+## variable in posterior.nc), label and color.
+## primary: true gives a sector its own button; the others sit behind
+## "+N more". color: any CSS colour, or a design token such as var(--arc-red).
+#%sectors
+# sectors:
+#   - {id: total}
+#   - {id: coal, label: Hard coal}          # changes the standard label "Coal"
+#   - {id: flaring, imi_var: EmisCH4_Flaring, label: Flaring, color: '#C2410C'}
+#%end
+
+
+## ── Map ─────────────────────────────────────────────────────────────────
+
+# map:
+#   ramp: reds                  # reds | viridis | magma | plasma
+#   scale: linear               # linear | log
+#   max_percentile: 98          # top of the colour bar, as a percentile of the values
+#   colorbar_transparent_bg: true
+##
+##   The base map. OpenStreetMap's tile server suits light use only (see
+##   the reference); none leaves the base map out.
+#   tiles: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+#   tiles_attribution:          # required with tiles other than OpenStreetMap's
+#   tiles_max_zoom: 19
+#   tile_size: 256              # 256 | 512
+#   attribution_compact: true   # false: the attribution text always visible
+
+
+## ── Chart ───────────────────────────────────────────────────────────────
+
+# chart:
+#   default_style: candle       # line | area | candle | bar
+#   default_speed: 3            # periods per second during playback
+
+
+## ── Text ────────────────────────────────────────────────────────────────
+
+#%text

@@ -1,0 +1,7 @@
+# Files that AI coding agents read as instructions, or that CI and Claude Code
+# execute, are reviewed like code. The review becomes required only with the
+# branch-protection rule "Require review from Code Owners" turned on.
+/AGENTS.md    @iannis-b
+/CLAUDE.md    @iannis-b
+/.claude/     @iannis-b
+/.github/     @iannis-b

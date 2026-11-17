@@ -1,0 +1,85 @@
+[build-system]
+# setuptools 77 is the first to read the SPDX `license` expression below.
+requires = ["setuptools>=77", "setuptools-scm>=8.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imi-dashboard"
+# The version is taken from the nearest git tag (v0.1.0 -> 0.1.0) by
+# setuptools-scm at build time; see [tool.setuptools_scm] below.
+dynamic = ["version"]
+description = "Turn Integrated Methane Inversion (IMI) outputs into a static, interactive web dashboard."
+readme = "README.md"
+requires-python = ">=3.11"
+# The licence files (LICENSE, NOTICE) sit at the repository root, which a
+# package two levels down cannot name; the release workflow copies them here
+# before building, where setuptools' default `license-files` patterns find them.
+# The package is Apache-2.0; the web app bundled into a release wheel and sdist
+# (imi_dashboard/bundle/) adds the licences of its third-party code and fonts,
+# whose texts are in bundle/assets/THIRD-PARTY-LICENSES.md.
+license = "Apache-2.0 AND MIT AND ISC AND BSD-2-Clause AND BSD-3-Clause AND OFL-1.1"
+authors = [{ name = "Terra Arc S.M.P.C." }]
+# The lower bounds are tested: CI's "lowest versions" job installs exactly
+# these on Python 3.11 and runs the tests. netCDF4 1.6.2 is the first release
+# with Python 3.11 wheels for Linux, macOS and Windows; typer 0.27.0 runs the
+# lines of each command's help epilog together in the rich format.
+dependencies = [
+    "numpy>=1.26",
+    "xarray>=2024.1",
+    "netCDF4>=1.6.2",
+    "pandas>=2.1",
+    "pyyaml>=6",
+    "pydantic>=2.5",
+    "typer>=0.27.1",
+    "rich>=13",
+]
+
+[project.urls]
+Homepage = "https://github.com/Terra-Arc/imi-dashboard"
+Documentation = "https://github.com/Terra-Arc/imi-dashboard#readme"
+Issues = "https://github.com/Terra-Arc/imi-dashboard/issues"
+Changelog = "https://github.com/Terra-Arc/imi-dashboard/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "mypy>=1.9",
+]
+# The browser tests (tests/test_browser.py), which open converted sample
+# dashboards in headless Chromium. Also needs the browser itself, installed
+# once with `playwright install --with-deps chromium`.
+browser = [
+    "pytest-playwright>=0.7",
+]
+
+[project.scripts]
+imi-dashboard = "imi_dashboard.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["imi_dashboard*"]
+
+[tool.setuptools.package-data]
+imi_dashboard = ["bundle/*", "bundle/**/*", "templates/*.md", "templates/*.yaml"]
+
+[tool.pytest.ini_options]
+# List the reason of every skipped test after the run, so that tests skipped
+# for a missing prerequisite (the browser tests without Playwright, Chromium
+# or a built web app) do not pass unnoticed.
+addopts = "-rs"
+
+[tool.mypy]
+# PyYAML and pandas ship no type information (their stubs are separate
+# packages). mypy reads this file only when run from this folder or given
+# --config-file, as CI does from the repository root.
+ignore_missing_imports = true
+
+[tool.setuptools_scm]
+# The package lives two levels below the repository root.
+root = "../.."
+# Used only when there is no git metadata at all (e.g. a source download
+# without .git); a real build always has the tag.
+fallback_version = "0.0.0+unknown"
+
+[tool.setuptools_scm.scm.git]
+# Only release tags (v1.2.3) count as versions; other tags are ignored.
+describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--abbrev=40", "--match", "v[0-9]*"]

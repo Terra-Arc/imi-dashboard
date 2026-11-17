@@ -1,0 +1,289 @@
+/*
+ * Terra Arc Design System — Colors & Typography
+ * Generated from brand assets. Font substitutions: DM Sans (display), Inter (body), JetBrains Mono (data)
+ */
+
+/* The fonts are bundled with the app (imported in main.tsx from the
+   @fontsource-variable packages), not loaded from Google Fonts. */
+
+/* ─────────────────────────────────────────
+   ARC SPECTRUM (from logo rainbow)
+───────────────────────────────────────── */
+:root {
+  --arc-red:    #E8312A;
+  --arc-orange: #F47B20;
+  --arc-yellow: #F9C116;
+  --arc-lime:   #8DC63F;
+  --arc-teal:   #00A79D;
+  --arc-blue:   #2B6CB0;
+
+  /* Arc gradient */
+  --arc-gradient: linear-gradient(90deg,
+    #E8312A 0%,
+    #F47B20 20%,
+    #F9C116 40%,
+    #8DC63F 60%,
+    #00A79D 80%,
+    #2B6CB0 100%
+  );
+  --arc-gradient-diagonal: linear-gradient(135deg,
+    #E8312A 0%,
+    #F47B20 20%,
+    #F9C116 40%,
+    #8DC63F 60%,
+    #00A79D 80%,
+    #2B6CB0 100%
+  );
+
+/* ─────────────────────────────────────────
+   BRAND PRIMARY & ACCENT
+───────────────────────────────────────── */
+  --brand-primary:       #00A79D;
+  --brand-primary-light: #E0F5F4;
+  --brand-primary-dark:  #007A72;
+
+  --brand-accent:        #F47B20;
+  --brand-accent-light:  #FEF0E3;
+  --brand-accent-dark:   #C05E10;
+
+  --teal-gradient:  linear-gradient(135deg, #00A79D, #2B6CB0);
+  --warm-gradient:  linear-gradient(135deg, #F47B20, #F9C116);
+
+/* ─────────────────────────────────────────
+   NEUTRAL PALETTE
+───────────────────────────────────────── */
+  --neutral-900: #0F1923;
+  --neutral-800: #1C2B3A;
+  --neutral-700: #2D3E50;
+  --neutral-600: #435A6F;
+  --neutral-500: #5E7A8A;
+  --neutral-400: #8199A8;
+  --neutral-300: #B8CEDD;
+  --neutral-200: #D4E2EA;
+  --neutral-100: #EEF3F7;
+  --neutral-50:  #F7FAFB;
+  --white:       #FFFFFF;
+
+/* ─────────────────────────────────────────
+   SEMANTIC COLORS
+───────────────────────────────────────── */
+  --color-success:       #00A79D;
+  --color-success-light: #E0F5F4;
+  --color-success-dark:  #007A72;
+
+  --color-warning:       #F9C116;
+  --color-warning-light: #FEF8E0;
+  --color-warning-dark:  #C49508;
+
+  --color-error:         #E8312A;
+  --color-error-light:   #FDECEA;
+  --color-error-dark:    #B01F1A;
+
+  --color-info:          #2B6CB0;
+  --color-info-light:    #E8F0FA;
+  --color-info-dark:     #1C4A80;
+
+/* ─────────────────────────────────────────
+   FOREGROUND / TEXT
+───────────────────────────────────────── */
+  --fg-primary:   var(--neutral-900);
+  --fg-secondary: var(--neutral-500);
+  --fg-tertiary:  var(--neutral-400);
+  --fg-inverse:   var(--white);
+  --fg-brand:     var(--brand-primary);
+  --fg-accent:    var(--brand-accent);
+
+/* ─────────────────────────────────────────
+   BACKGROUNDS
+───────────────────────────────────────── */
+  --bg-page:    var(--neutral-50);
+  --bg-surface: var(--white);
+  --bg-raised:  var(--white);
+  --bg-dark:    var(--neutral-900);
+  --bg-dark-2:  var(--neutral-800);
+  --bg-muted:   var(--neutral-100);
+  --bg-brand:   var(--brand-primary);
+  --bg-accent:  var(--brand-accent);
+
+/* ─────────────────────────────────────────
+   BORDERS
+───────────────────────────────────────── */
+  --border-default: 1px solid var(--neutral-300);
+  --border-muted:   1px solid var(--neutral-200);
+  --border-strong:  1px solid var(--neutral-500);
+  --border-brand:   1px solid var(--brand-primary);
+
+/* ─────────────────────────────────────────
+   SHADOWS / ELEVATION
+───────────────────────────────────────── */
+  --shadow-0: none;
+  --shadow-1: 0 1px 4px rgba(15,25,35,0.08), 0 0 0 1px rgba(15,25,35,0.05);
+  --shadow-2: 0 4px 16px rgba(15,25,35,0.12), 0 1px 4px rgba(15,25,35,0.06);
+  --shadow-3: 0 16px 48px rgba(15,25,35,0.18);
+  --focus-ring: 0 0 0 3px rgba(0,167,157,0.28);
+
+/* ─────────────────────────────────────────
+   CORNER RADII
+───────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+/* ─────────────────────────────────────────
+   SPACING SCALE (8px base)
+───────────────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY — FONT FAMILIES
+───────────────────────────────────────── */
+  --font-display: 'DM Sans Variable', 'DM Sans', system-ui, sans-serif;
+  --font-body:    'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono Variable', 'JetBrains Mono', 'Menlo', monospace;
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY — SCALE
+───────────────────────────────────────── */
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  32px;
+  --text-3xl:  40px;
+  --text-4xl:  52px;
+  --text-5xl:  68px;
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY — LINE HEIGHTS
+───────────────────────────────────────── */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.5;
+  --leading-loose:  1.7;
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY — LETTER SPACING
+───────────────────────────────────────── */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+
+/* ─────────────────────────────────────────
+   ANIMATION
+───────────────────────────────────────── */
+  --ease-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:        cubic-bezier(0, 0, 0.2, 1);
+  --ease-in:         cubic-bezier(0.4, 0, 1, 1);
+  --duration-fast:   150ms;
+  --duration-base:   250ms;
+  --duration-slow:   400ms;
+}
+
+/* ─────────────────────────────────────────
+   SEMANTIC TYPE CLASSES
+───────────────────────────────────────── */
+.t-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-primary);
+}
+.t-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-primary);
+}
+.t-display-md {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-primary);
+}
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-primary);
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  color: var(--fg-primary);
+}
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  color: var(--fg-primary);
+}
+h4, .h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: var(--leading-normal);
+  color: var(--fg-primary);
+}
+p, .body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  color: var(--fg-primary);
+}
+.body-sm {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  color: var(--fg-secondary);
+}
+.label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  color: var(--fg-primary);
+}
+.overline {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+}
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--brand-primary);
+  background: var(--brand-primary-light);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}

@@ -1,0 +1,129 @@
+name: Release
+
+# Runs the converter tests, builds the imi-dashboard wheel and sdist with the
+# web app inside them, checks that the wheel works on its own, and attaches
+# both to a draft GitHub release.
+#
+# Runs when a version tag is pushed:
+#     git tag v0.1.0 && git push origin v0.1.0
+# The package version comes from that tag (setuptools-scm), so nothing in the
+# repository needs editing to make a release. Publishing to PyPI is not set up
+# yet.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and check the package
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.expected.outputs.version }}
+      prerelease: ${{ steps.expected.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # setuptools-scm reads the version from the tags
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Run the converter tests
+        run: |
+          python -m pip install -e "tools/imi-dashboard[dev]"
+          pytest tools/imi-dashboard/tests/
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build the web app
+        working-directory: web
+        run: |
+          npm ci
+          npm run build  # runs the type check (tsc --noEmit) first
+
+      - name: Copy the web app into the package
+        run: |
+          bundle=tools/imi-dashboard/imi_dashboard/bundle
+          rm -rf "$bundle"
+          mkdir -p "$bundle"
+          cp -r web/dist/. "$bundle/"
+          test -f "$bundle/index.html" && test -f "$bundle/imi-dashboard-app.json"
+          # The licence files go into the wheel's and sdist's metadata.
+          cp LICENSE NOTICE tools/imi-dashboard/
+
+      - name: Build the wheel and sdist
+        run: |
+          python -m pip install --upgrade build
+          python -m build tools/imi-dashboard --outdir dist/
+          ls -l dist/
+          python - dist/*.whl <<'EOF'
+          import sys, zipfile
+          names = zipfile.ZipFile(sys.argv[1]).namelist()
+          found = sorted(n.rsplit("/", 1)[1] for n in names if ".dist-info/licenses/" in n)
+          print("licence files in the wheel:", found)
+          assert found == ["LICENSE", "NOTICE"], found
+          EOF
+
+      - name: Work out the version the tag names
+        id: expected
+        run: |
+          python - "$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT" <<'EOF'
+          import sys
+          from packaging.version import Version  # installed with build
+          v = Version(sys.argv[1].removeprefix("v"))  # fails on a malformed tag
+          print(f"version={v}")
+          print(f"prerelease={'true' if v.is_prerelease else 'false'}")
+          EOF
+
+      - name: Install the wheel outside the clone and convert a sample
+        env:
+          EXPECTED: ${{ steps.expected.outputs.version }}
+        run: |
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install dist/*.whl
+          # Remove the clone's build so only the copy inside the wheel can be used.
+          rm -rf web/dist tools/imi-dashboard/imi_dashboard/bundle
+
+          installed=$("$RUNNER_TEMP/venv/bin/imi-dashboard" --version)
+          echo "tag names $EXPECTED, package reports $installed"
+          test "$installed" = "$EXPECTED"
+
+          site="$RUNNER_TEMP/site"
+          "$RUNNER_TEMP/venv/bin/imi-dashboard" convert sample_files/single_period "$site"
+          test -f "$site/index.html"
+          test -d "$site/assets"
+          test -f "$site/data/manifest.json"
+          test -f "$site/imi-dashboard-app.json"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  release:
+    name: Draft the GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+      - name: Create a draft release with the wheel and sdist attached
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRERELEASE: ${{ needs.build.outputs.prerelease }}
+        run: |
+          flags=(--draft --verify-tag --generate-notes --title "$GITHUB_REF_NAME")
+          if [ "$PRERELEASE" = "true" ]; then flags+=(--prerelease); fi
+          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" "${flags[@]}"

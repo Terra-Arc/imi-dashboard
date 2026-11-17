@@ -1,0 +1,88 @@
+## The config of the Romania sample run in sample_files/timeseries/:
+##
+##     imi-dashboard convert sample_files/timeseries dashboards/romania --config examples/config.example.yaml
+##
+## Lines starting with `##` explain; lines starting with `# ` are settings
+## left at their default. Every setting is optional. For the full list,
+## run `imi-dashboard init-config sample_files/timeseries -o -`.
+
+
+## ── Titles ──────────────────────────────────────────────────────────────
+
+area_name: Romania
+display_name: Methane emissions over Romania   # the default when area_name is set
+
+
+## ── Region ──────────────────────────────────────────────────────────────
+
+## roi: the region of interest only, buffer elements dropped and the map
+## cropped. domain: the whole inversion domain.
+region: roi                     # roi | domain
+
+
+## ── Branding ────────────────────────────────────────────────────────────
+
+## custom: your own logo, name and tagline in the header, each optional.
+header_brand: terra             # terra | custom
+# logo: ./logo.png              # a relative path is read from this file's folder
+# brand_name: Client Name
+# brand_tagline: Bridging data and impact
+
+
+## ── Sectors ─────────────────────────────────────────────────────────────
+
+## In display order; a sector left out is not shown. Coal comes right after
+## the total: coal mining is one of Romania's main methane sources, next to
+## oil and gas production and livestock. The run's lakes, other
+## anthropogenic, seeps and termites sectors are left out.
+## A standard id needs only the fields it changes. reservoir is not a
+## standard id (that is reservoirs), so it gives imi_var, label and color.
+sectors:
+  - {id: total}
+  - {id: coal}
+  - {id: oil}
+  - {id: gas}
+  - {id: livestock}
+  - {id: landfills}
+  - {id: wastewater}
+  - {id: rice}
+  - {id: biomass}
+  - {id: wetlands}
+  - {id: reservoir, imi_var: EmisCH4_Reservoirs, label: Reservoirs, color: '#3D7EA6'}
+
+
+## ── Map ─────────────────────────────────────────────────────────────────
+
+map:
+  ramp: reds                    # reds | viridis | magma | plasma
+  scale: linear                 # linear | log
+  max_percentile: 99.5          # top of the colour bar, as a percentile of the values
+  colorbar_transparent_bg: true
+##
+##  The base map. Default: OpenStreetMap's tile server, fine for light use;
+##  point a busy dashboard at another provider, or set `tiles: none`.
+# tiles: https://tiles.example.org/{z}/{x}/{y}.png
+# tiles_attribution: © OpenStreetMap contributors, © Example Tiles
+
+
+## ── Chart ───────────────────────────────────────────────────────────────
+
+chart:
+  default_style: candle         # line | area | candle | bar
+  default_speed: 3              # periods per second during playback
+
+
+## ── Text ────────────────────────────────────────────────────────────────
+
+text:
+  ## The run's periods are calendar months. Without this key the cadence is
+  ## detected from the first period's length, which gives the same.
+  cadence: monthly              # daily | weekly | biweekly | monthly | annual | custom
+  ##
+  ## The sample run's results are wrong (sample_files/README.md), so its
+  ## dashboard says so under the heading and in the footer.
+  subtitle_timeseries: "Monthly Kalman-filter inversion · {date_start} – {date_end} · demonstration data, not valid estimates"
+  footer_disclaimer: >-
+    Demonstration data. The inversion results shown here are known to be
+    wrong and serve only to show how the dashboard works; they are not
+    estimates of Romania's methane emissions.

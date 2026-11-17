@@ -1,0 +1,6 @@
+node_modules
+dist
+.vite
+*.log
+# Dev-server link or copy of a dashboard's data/ folder (see README.md)
+public/data

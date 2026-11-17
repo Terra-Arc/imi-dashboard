@@ -1,0 +1,43 @@
+.idea/
+.venv/
+.venv-lowest/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+# Screenshots and traces the browser tests keep (pytest-playwright --output).
+test-results/
+
+# Personal agent configuration and instructions. AGENTS.md is the shared,
+# committed file; Claude Code settings (which can define hooks that run shell
+# commands) and personal notes stay local.
+# Unanchored, so a nested .claude/ (in a subfolder) is ignored too.
+.claude/
+CLAUDE.local.md
+
+web/node_modules/
+web/.vite/
+
+# Generated dashboards are build outputs (./build.sh, imi-dashboard); rebuild
+# them rather than committing them.
+/dashboards/
+/out_*/
+
+# Local inversion datasets and analysis outputs. Put full IMI output folders
+# under local_data/ and convert from there, e.g.:
+#   imi-dashboard convert local_data/timeseries/<run> <run> --config examples/config.example.yaml
+/local_data/
+/data/
+*.tar.gz
+*.zip
+
+# Copy of web/dist placed inside the package only when building a wheel, and
+# build outputs anywhere in the tree (web/dist, the wheel's build/ and dist/).
+/tools/imi-dashboard/imi_dashboard/bundle/
+# Copies of the root LICENSE and NOTICE made by the release workflow.
+/tools/imi-dashboard/LICENSE
+/tools/imi-dashboard/NOTICE
+build/
+dist/

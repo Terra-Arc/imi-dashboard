@@ -1,0 +1,17 @@
+IMI Dashboard
+Copyright 2026 Terra Arc S.M.P.C.
+
+This product is licensed under the Apache License, Version 2.0 (the file
+LICENSE). It was created by Terra Arc S.M.P.C. (https://github.com/Terra-Arc/imi-dashboard).
+
+The web app bundled into every generated dashboard contains third-party
+software and fonts under their own licences (MIT, ISC, BSD-2-Clause,
+BSD-3-Clause, and the SIL Open Font License 1.1 for the DM Sans, Inter and
+JetBrains Mono fonts). Their licence texts are in
+assets/THIRD-PARTY-LICENSES.md inside each dashboard.
+
+The test fixtures in sample_files/ are outputs of Integrated Methane
+Inversion runs. They contain modified Copernicus Sentinel data (2021, 2023),
+processed by the IMI from TROPOMI observations, and prior emission fields
+from the inventories the IMI uses. Their sources, terms and credits are in
+sample_files/README.md.

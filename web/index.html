@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IMI · Methane emissions dashboard</title>
+    <link rel="icon" href="./assets/logo_small.png" />
+  </head>
+  <body>
+    <div id="root">
+      <!-- Shown until the app starts, which replaces it; stays when the
+           scripts cannot run (e.g. the page was opened from file://). -->
+      <div class="app-loading">
+        <strong>Loading the dashboard…</strong>
+        <p>
+          If this message stays, the dashboard could not start. Open it
+          through a web server (an http:// address), not as a file on disk:
+          the README.md in the dashboard folder explains how. JavaScript must
+          be enabled.
+        </p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
